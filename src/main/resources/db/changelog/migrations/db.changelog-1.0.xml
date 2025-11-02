@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="1" author="nicolas.souza">
+        <sql dbms="postgresql">
+            create table categoria (
+            id_categoria NUMERIC PRIMARY KEY,
+            nome text not null
+            );
+
+            create table produto (
+            id_produto NUMERIC PRIMARY KEY,
+            nome text not null,
+            preco_custo NUMERIC(15, 2) not null,
+            preco_venda NUMERIC(15, 2) not null,
+            categoria_id numeric,
+            CONSTRAINT fk_produto_categoria FOREIGN KEY (categoria_id)
+            REFERENCES categoria(id_categoria)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="2" author="nicolas.souza">
+        <sql dbms="postgresql">
+            CREATE SEQUENCE seq_id_categoria
+            START WITH 1
+            INCREMENT BY 1
+            no cycle;
+
+            CREATE SEQUENCE seq_id_produto
+            START WITH 1
+            INCREMENT BY 1
+            no cycle;
+        </sql>
+    </changeSet>
+    <changeSet id="3" author="nicolas.souza">
+        <sql dbms="postgresql">
+            INSERT INTO categoria (id_categoria, nome)
+            VALUES (1, 'Pratas');
+        </sql>
+    </changeSet>
+    <changeSet id="4" author="nicolas.souza">
+        <sql dbms="postgresql">
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (1, 'Anel de Prata 925 com Zircônia', 50.00, 120.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (2, 'Colar de Prata 925 com Pingente Coração', 70.00, 160.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (3, 'Brinco de Prata 925 Gota Pequena', 35.00, 90.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (4, 'Pulseira de Prata 925 Malha Groumet', 90.00, 210.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (5, 'Tornozeleira de Prata 925 com Pingente Lua', 55.00, 130.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (6, 'Pingente de Prata 925 Cruz Pequena', 25.00, 70.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (7, 'Argola de Prata 925 Média', 45.00, 110.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (8, 'Anel Solitário de Prata 925 com Pedra Azul', 65.00, 150.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (9, 'Brinco de Prata 925 Coração Vazado', 40.00, 95.00, 1);
+
+            INSERT INTO produto (id_produto, nome, preco_custo, preco_venda, categoria_id)
+            VALUES (10, 'Pulseira de Prata 925 com Pingentes', 85.00, 200.00, 1);
+        </sql>
+    </changeSet>
+    <changeSet id="5" author="nicolas.souza">
+        <sql dbms="postgresql">
+            ALTER SEQUENCE seq_id_produto RESTART WITH 11;
+        </sql>
+    </changeSet>
+    <changeSet id="6" author="nicolas.souza">
+        <sql dbms="postgresql">
+            create table entrada_estoque (
+            id_entrada_estoque NUMERIC PRIMARY KEY,
+            data TIMESTAMP NOT NULL,
+            id_produto NUMERIC NOT NULL,
+            quantidade NUMERIC NOT NULL,
+            CONSTRAINT fk_entrada_estoque_produto FOREIGN KEY (id_produto)
+            REFERENCES produto(id_produto)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="7" author="nicolas.souza">
+        <sql dbms="postgresql">
+            CREATE SEQUENCE seq_id_entrada_estoque
+            START WITH 1
+            INCREMENT BY 1
+            no cycle;
+        </sql>
+    </changeSet>
+    <changeSet id="8" author="nicolas.souza">
+        <sql dbms="postgresql">
+            ALTER TABLE produto
+            ADD COLUMN quantidade_estoque NUMERIC DEFAULT 0;
+        </sql>
+    </changeSet>
+    <changeSet id="9" author="nicolas.souza">
+        <sql dbms="postgresql">
+            CREATE TABLE venda (
+            id_venda NUMERIC PRIMARY KEY,
+            data TIMESTAMP NOT NULL,
+            valor_total NUMERIC(15, 2) NOT NULL
+            );
+
+            CREATE TABLE item_venda (
+            id_item_venda NUMERIC PRIMARY KEY,
+            id_venda NUMERIC NOT NULL,
+            id_produto NUMERIC NOT NULL,
+            quantidade NUMERIC NOT NULL,
+            preco_unitario NUMERIC(15, 2) NOT NULL,
+            CONSTRAINT fk_item_venda_venda FOREIGN KEY (id_venda)
+            REFERENCES venda(id_venda),
+            CONSTRAINT fk_item_venda_produto FOREIGN KEY (id_produto)
+            REFERENCES produto(id_produto)
+            );
+
+            CREATE SEQUENCE seq_id_venda
+            START WITH 1
+            INCREMENT BY 1
+            no cycle;
+
+            CREATE SEQUENCE seq_id_item_venda
+            START WITH 1
+            INCREMENT BY 1
+            no cycle;
+        </sql>
+    </changeSet>
+    <changeSet id="10" author="nicolas.souza">
+        <sql dbms="postgresql">
+            ALTER TABLE item_venda
+            DROP COLUMN preco_unitario;
+        </sql>
+    </changeSet>
+    <changeSet id="11" author="nicolas.souza">
+        <sql dbms="postgresql">
+            DELETE FROM item_venda;
+            DELETE FROM venda;
+
+            ALTER TABLE item_venda
+            ADD COLUMN preco_unitario NUMERIC(15, 2) NOT NULL;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
