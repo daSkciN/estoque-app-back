@@ -32,9 +32,9 @@ public class SecurityConfiguration {
                 .antMatchers("/auth", "/usuario/current").permitAll()
                 .antMatchers("/produto", "/produto/**", "/entradaEstoque", "/entradaEstoque/**", "/venda", "/venda/**, /categoria", "/categoria/**").permitAll()
                 // tudo mais exige autenticação
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic(); // ou formLogin(), dependendo do que você usa
+                .anyRequest().authenticated();
+                //.and()
+                //.httpBasic(); // ou formLogin(), dependendo do que você usa
 
         return http.build();
     }
