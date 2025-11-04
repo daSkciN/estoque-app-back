@@ -42,6 +42,11 @@ public class ProdutoService {
         return produtos;
     }
 
+    public Long contarProdutosComEstoqueBaixo() {
+        Integer limite = 5;
+        return produtoRepository.countProdutosComEstoqueBaixo(limite);
+    }
+
     public ProdutoDto findById(Integer idProduto) throws RegraDeNegocioException{
         Produto produto = produtoRepository.findById(idProduto)
                 .orElseThrow(() -> new RegraDeNegocioException("Produto não encontrado", HttpStatus.NOT_FOUND));

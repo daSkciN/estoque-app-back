@@ -39,6 +39,12 @@ public class ProdutoController {
         return new ResponseEntity<>(produto, HttpStatus.OK);
     }
 
+    @GetMapping("/estoque-baixo/quantidade")
+    public ResponseEntity<Long> contarProdutosComEstoqueBaixo() {
+        Long quantidade = produtoService.contarProdutosComEstoqueBaixo();
+        return ResponseEntity.ok(quantidade);
+    }
+
     @PostMapping
     public ResponseEntity<ProdutoDto> create(@Valid @RequestBody ProdutoCreateDto produtoCreateDto) throws RegraDeNegocioException {
 
